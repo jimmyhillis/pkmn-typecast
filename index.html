@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title></title>
+    <meta name="viewport" content="width=device-width,user-scalable=no, scale=1, maximum-scale=1.0" />
+    <title>PKMN Typécast</title>
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.1/angular.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.1/angular-resource.min.js" type="text/javascript" charset="utf-8"></script>
@@ -46,11 +46,11 @@
          * entry string the user is typing.
          */
         Typecast.controller('PokemonCtrl', ['$scope', '$resource', function ($scope, $resource) {
-            var Pokemon = $resource('/data/db.json', {}, {
+            var Pokemon = $resource('data/db.json', {}, {
                 get: { method:'GET', isArray: true }
             });
             var pokemons = Pokemon.get(function (pkmn) {
-                $scope.pokemons = pkmn.slice(0,10);
+                $scope.pokemons = pkmn.slice(0,9);
             });
             $scope.$watch('pokemonSearch', function (newValue, oldValue) {
                 if (!newValue || newValue.length < 3) {
