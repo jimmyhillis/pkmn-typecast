@@ -26,7 +26,8 @@
     "node": "*"
   },
   "dependencies": {
-    "connect": "~2.13.0"
+    "connect": "~2.13.0",
+    "underscore": "~1.6.0"
   },
   "devDependencies": {
     "csvtojson": "~0.1.7"

@@ -12,6 +12,30 @@
         #page-wrap{
             max-width:600px;
             margin:0 auto;
+            padding-top:120px;
+        }
+        h4{
+            font-weight:normal;
+            line-height:1.6em;
+        }
+        .list-group-pokemon{
+            overflow:hidden;
+        }
+        .pokemon{
+            position:relative;
+            z-index:1;
+        }
+        .pokemon-name{
+            text-transform:uppercase;
+        }
+        .pokemon-image{
+            position:absolute;
+            top:10px;
+            right:0;
+            z-index:0;
+        }
+        .typelist{
+            display:block;
         }
     </style>
     <script type="text/javascript" charset="utf-8">
@@ -25,7 +49,9 @@
             var Pokemon = $resource('/data/db.json', {}, {
                 get: { method:'GET', isArray: true }
             });
-            var pokemons = Pokemon.get();
+            var pokemons = Pokemon.get(function (pkmn) {
+                $scope.pokemons = pkmn.slice(0,10);
+            });
             $scope.$watch('pokemonSearch', function (newValue, oldValue) {
                 if (!newValue || newValue.length < 3) {
                     return;
@@ -43,31 +69,62 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
-                    <h1>Pokemon Typecast</h1>
+                    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+                        <div class="container">
+                            <a href="/" class="navbar-brand">PKMN Typécast</a>
+                            <form class="navbar-form navbar-left" role="search">
+                                <div class="form-group has-feedback">
+                                    <label class="control-label hidden-xs" for="pokemonSearch">Search for your opponent Pokémon</label>
+                                    <input type="search" id="pokemonSearch" class="form-control" ng-model="pokemonSearch" placeholder="Pikachu" />
+                                    <span class="glyphicon glyphicon-search form-control-feedback hidden-xs"></span>
+                                </div>
+                            </form>
+                        </div>
+                    </nav>
                     <p>
-                        This tool is for you to use while playing a pokemon game.
-                        Type in the name of the pokémon you are battling and it will
-                        tell you it's type strength and weaknesses.
+                        What? When playing Pokémon I never know which move I should
+                        use against an opponent. Search for the PKMN you are
+                        up againast and you will see which moves are NOT
+                        VERY EFFECTIVE and those which are VERY EFFECTIVE.
                     </p>
-                    <div class="well">
-                        <form class="form" role="form">
-                            <div class="form-group has-feedback">
-                                <label class="control-label" for="pokemonSearch">Pokémon</label>
-                                <input type="search" id="pokemonSearch" class="form-control" ng-model="pokemonSearch" placeholder="Pikachu" />
-                                <span class="glyphicon glyphicon-search form-control-feedback"></span>
-                            </div>
-                        </form>
-                    </div>
                     <div class="pokemon">
                         <ul class="list-group">
                             <li ng-repeat="pokemon in pokemons"
-                                class="list-group-item active">
-                                <h2>
-                                    {{pokemon.identifier}}
-                                </h2>
-                                <span ng-repeat="type in pokemon.types" class="label label-info">
-                                    {{type.identifier}}
-                                </span>
+                                class="list-group-item list-group-pokemon active">
+                                <div class="pokemon">
+                                    <h2 class="pokemon-name media-heading">{{pokemon.identifier}}</h2>
+                                    <h4 class="pokemon-types">
+                                        Type
+                                        <div ng-repeat="type in pokemon.types" class="label label-info">
+                                            {{type.identifier}}
+                                        </div>
+                                    </h4>
+                                    <h4>
+                                        Not very effective
+                                        <div class="typelist">
+                                            <span ng-repeat="type in pokemon.strengths" class="label label-danger">
+                                                {{type.identifier}}
+                                            </span>
+                                        </div>
+                                    </h4>
+                                    <h4>
+                                        Very effective
+                                        <div class="typelist">
+                                            <span ng-repeat="type in pokemon.weaknesses" class="label label-success">
+                                                {{type.identifier}}
+                                            </span>
+                                        </div>
+                                    </h4>
+                                    <h4>
+                                        Immune
+                                        <div class="typelist">
+                                            <span ng-repeat="type in pokemon.immunities" class="label label-default">
+                                                {{type.identifier}}
+                                            </span>
+                                        </div>
+                                    </h4>
+                                </div>
+                                <img class="pokemon-image hidden-xs" src="http://img.pokemondb.net/artwork/{{pokemon.identifier}}.jpg" />
                             </li>
                         </ul>
                     </div>
