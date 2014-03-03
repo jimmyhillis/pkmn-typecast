@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html ng-app='typecast'>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.1/angular.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.1/angular-resource.min.js" type="text/javascript" charset="utf-8"></script>
+    <style type="text/css" media="screen">
+        #page-wrap{
+            max-width:600px;
+            margin:0 auto;
+        }
+    </style>
+    <script type="text/javascript" charset="utf-8">
+        // Setup app namespace
+        var Typecast = angular.module('typecast', ['ngResource']);
+        /**
+         * Handle the searching of a the PKMN database based on
+         * entry string the user is typing.
+         */
+        Typecast.controller('PokemonCtrl', ['$scope', '$resource', function ($scope, $resource) {
+            var Pokemon = $resource('/data/db.json', {}, {
+                get: { method:'GET', isArray: true }
+            });
+            var pokemons = Pokemon.get();
+            $scope.$watch('pokemonSearch', function (newValue, oldValue) {
+                if (!newValue || newValue.length < 3) {
+                    return;
+                }
+                var pokemon = newValue.toLowerCase()
+                $scope.pokemons = pokemons.filter(function (item) {
+                    return item.identifier.indexOf(pokemon.toLowerCase()) === 0;
+                });
+            });
+        }]);
+    </script>
+</head>
+<body ng-controller="PokemonCtrl">
+    <div id="page-wrap">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>Pokemon Typecast</h1>
+                    <p>
+                        This tool is for you to use while playing a pokemon game.
+                        Type in the name of the pokémon you are battling and it will
+                        tell you it's type strength and weaknesses.
+                    </p>
+                    <div class="well">
+                        <form class="form" role="form">
+                            <div class="form-group has-feedback">
+                                <label class="control-label" for="pokemonSearch">Pokémon</label>
+                                <input type="search" id="pokemonSearch" class="form-control" ng-model="pokemonSearch" placeholder="Pikachu" />
+                                <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="pokemon">
+                        <ul class="list-group">
+                            <li ng-repeat="pokemon in pokemons"
+                                class="list-group-item active">
+                                <h2>
+                                    {{pokemon.identifier}}
+                                </h2>
+                                <span ng-repeat="type in pokemon.types" class="label label-info">
+                                    {{type.identifier}}
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
