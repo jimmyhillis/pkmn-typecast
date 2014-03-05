@@ -5,8 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,user-scalable=no, scale=1, maximum-scale=1.0" />
     <title>PKMN Typécast</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.1/angular.min.js" type="text/javascript" charset="utf-8"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.1/angular-resource.min.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="apple-touch-icon-precomposed" href="apple-touch-icon-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="apple-touch-icon-72x72-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="apple-touch-icon-114x114-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="apple-touch-icon-1024x1024-precomposed.png">
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     <style type="text/css" media="screen">
         body{
@@ -166,6 +169,8 @@
             }
         }
     </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.1/angular.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.1/angular-resource.min.js" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript" charset="utf-8">
         // Setup app namespace
         var Typecast = angular.module('typecast', ['ngResource']);
@@ -178,10 +183,11 @@
                 get: { method:'GET', isArray: true }
             });
             var pokemons = Pokemon.get(function (pkmn) {
-                $scope.pokemons = pkmn.slice(0,12);
+                $scope.pokemons = pkmn.slice(0, 30);
             });
             $scope.$watch('pokemonSearch', function (newValue, oldValue) {
                 if (!newValue || newValue.length < 1) {
+                    $scope.pokemons = pokemons.slice(0, 30);
                     return;
                 }
                 var pokemon = newValue.toLowerCase()
@@ -191,11 +197,6 @@
             });
         }]);
     </script>
-    <link rel="shortcut icon" href="favicon.ico" />
-    <link rel="apple-touch-icon-precomposed" href="apple-touch-icon-precomposed.png" />
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="apple-touch-icon-72x72-precomposed.png" />
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="apple-touch-icon-114x114-precomposed.png" />
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="apple-touch-icon-1024x1024-precomposed.png">
 </head>
 <body ng-controller="PokemonCtrl">
     <div id="page-wrap" class="inner-wrap">
@@ -204,7 +205,7 @@
                 <h1 class="brand">PKMN Typécast</h1>
                 <form class="search" role="search">
                     <label class="control-label hidden-xs" for="pokemonSearch">Search</label>
-                    <input type="text" id="pokemonSearch" class="form-control" ng-model="pokemonSearch" placeholder="Pikachu" />
+                    <input type="text" id="pokemonSearch" class="form-control" ng-model="pokemonSearch" placeholder="Pokemon" />
                 </form>
             </div>
         </nav>
@@ -252,7 +253,7 @@
                         </div>
                     </div>
                 </div>
-                <img class="pokemon-image" src="http://img.pokemondb.net/artwork/{{pokemon.identifier}}.jpg" />
+                <img class="pokemon-image" ng-src="http://img.pokemondb.net/artwork/{{pokemon.identifier}}.jpg" />
             </li>
         </ul>
     </div>
