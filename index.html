@@ -178,10 +178,11 @@
                 get: { method:'GET', isArray: true }
             });
             var pokemons = Pokemon.get(function (pkmn) {
-                $scope.pokemons = pkmn.slice(0,12);
+                $scope.pokemons = pkmn.slice(0, 30);
             });
             $scope.$watch('pokemonSearch', function (newValue, oldValue) {
                 if (!newValue || newValue.length < 1) {
+                    $scope.pokemons = pokemons.slice(0, 30);
                     return;
                 }
                 var pokemon = newValue.toLowerCase()
@@ -252,7 +253,7 @@
                         </div>
                     </div>
                 </div>
-                <img class="pokemon-image" src="http://img.pokemondb.net/artwork/{{pokemon.identifier}}.jpg" />
+                <img class="pokemon-image" ng-src="http://img.pokemondb.net/artwork/{{pokemon.identifier}}.jpg" />
             </li>
         </ul>
     </div>
