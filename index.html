@@ -5,23 +5,72 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,user-scalable=no, scale=1, maximum-scale=1.0" />
     <title>PKMN Typécast</title>
-    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.1/angular.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.1/angular-resource.min.js" type="text/javascript" charset="utf-8"></script>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     <style type="text/css" media="screen">
-        #page-wrap{
-            max-width:600px;
-            margin:0 auto;
-            padding-top:120px;
+        body{
+            font-family:'Open Sans',sans-serif;
         }
         h4{
-            font-weight:normal;
-            line-height:1.6em;
+            margin:10px 0 5px 0;
+            padding-right:5px;
+            line-height:2;
+            background:white;
+            display:inline-block;
+        }
+        #page-wrap{
+            padding-top:60px;
+        }
+            .inner-wrap{
+                max-width:450px;
+                margin:0 auto;
+            }
+        #nav{
+            color:black;
+            background:#f15b41;
+            position:fixed;
+            width:100%;
+            top:0;
+            left:0;
+            height:50px;
+            line-height:50px;
+            box-sizing:border-box;
+            padding:0 20px;
+            z-index:2;
+        }
+            .search{
+                float:right;
+            }
+            #pokemonSearch{
+                max-width:100px;
+                padding:5px 10px;
+                border:0;
+                /*line-height:30px;*/
+                font-size:1em;
+                margin:0;
+                border:0;
+                font-family:'Open Sans',sans-serif;
+            }
+        .brand{
+            color:white;
+            font-weight:bold;
+            font-size:1.4em;
+            text-transform:uppercase;
+            text-decoration:none;
+            margin:0 20px 0 0;
+            float: left;
         }
         .list-group-pokemon{
             overflow:hidden;
         }
-        .pokemon{
+        .pokemons{
+            list-style:none;
+            padding:0;
+            margin:0;
+        }
+        .pokemon,
+        .pokemon-info{
             position:relative;
             z-index:1;
         }
@@ -37,6 +86,85 @@
         .typelist{
             display:block;
         }
+        .pokemon-type{
+            padding:0.5em;
+            text-transform:uppercase;
+            color:white;
+            margin-right:5px;
+            box-sizing:border-box;
+            display:inline-block;
+            margin-bottom:5px;
+            border:solid 2px white;
+        }
+            .type-fire{
+                background-color:#f89030;
+            }
+            .type-bug{
+                background-color:#a0c888;
+            }
+            .type-flying{
+                background: linear-gradient(to bottom, #58c8f0 0%, #58c8f0 50%, #e0d8b7 50%, #e0d8b7 100%);
+            }
+            .type-fairy{
+                background-color:#ff65d5;
+            }
+            .type-poison{
+                background-color:#e090f8;
+            }
+            .type-steel{
+                background-color:#b8b8d0;
+            }
+            .type-electric{
+                background-color:#e0e000;
+            }
+            .type-water{
+                background-color:#6898f7;
+            }
+            .type-ground{
+                background: linear-gradient(to bottom, #e0e000 0%, #e0e000 50%, #c8a048 50%, #c8a048 100%);
+            }
+            .type-grass{
+                background-color:#90e880;
+            }
+            .type-dragon{
+                background: linear-gradient(to bottom, #6898f8 0%, #6898f8 50%, #f87070 50%, #f87070 100%);
+            }
+            .type-ice{
+                background-color:#30d8cf;
+            }
+            .type-rock{
+                background-color:#c8a048;
+            }
+            .type-fighting{
+                background-color:#f87070;
+            }
+            .type-normal{
+                background-color:#b8b8a8;
+            }
+            .type-dark{
+                background-color:#908888;
+            }
+            .type-psychic{
+                background-color:#f838a8;
+            }
+            .type-ghost{
+                background-color:#a870f8;
+            }
+        @media (max-width: 800px) {
+            #page-wrap{
+                padding-top:35px;
+            }
+            .hidden-xs{
+                display:none;
+            }
+            #nav{
+                padding:0 5px;
+            }
+            .brand{
+                font-size:1.1em;
+                margin-left:0;
+            }
+        }
     </style>
     <script type="text/javascript" charset="utf-8">
         // Setup app namespace
@@ -50,10 +178,10 @@
                 get: { method:'GET', isArray: true }
             });
             var pokemons = Pokemon.get(function (pkmn) {
-                $scope.pokemons = pkmn.slice(0,9);
+                $scope.pokemons = pkmn.slice(0,12);
             });
             $scope.$watch('pokemonSearch', function (newValue, oldValue) {
-                if (!newValue || newValue.length < 3) {
+                if (!newValue || newValue.length < 1) {
                     return;
                 }
                 var pokemon = newValue.toLowerCase()
@@ -70,71 +198,63 @@
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="apple-touch-icon-1024x1024-precomposed.png">
 </head>
 <body ng-controller="PokemonCtrl">
-    <div id="page-wrap">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-12">
-                    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-                        <div class="container">
-                            <a href="/" class="navbar-brand">PKMN Typécast</a>
-                            <form class="navbar-form navbar-left" role="search">
-                                <div class="form-group has-feedback">
-                                    <label class="control-label hidden-xs" for="pokemonSearch">Search for your opponent Pokémon</label>
-                                    <input type="search" id="pokemonSearch" class="form-control" ng-model="pokemonSearch" placeholder="Pikachu" />
-                                    <span class="glyphicon glyphicon-search form-control-feedback hidden-xs"></span>
-                                </div>
-                            </form>
+    <div id="page-wrap" class="inner-wrap">
+        <nav id="nav">
+            <div class="inner-wrap">
+                <h1 class="brand">PKMN Typécast</h1>
+                <form class="search" role="search">
+                    <label class="control-label hidden-xs" for="pokemonSearch">Search</label>
+                    <input type="text" id="pokemonSearch" class="form-control" ng-model="pokemonSearch" placeholder="Pikachu" />
+                </form>
+            </div>
+        </nav>
+        <p>
+            Search for the PKMN you are up againast and you can
+            see which move types are NOT VERY EFFECTIVE and those
+            which are VERY EFFECTIVE.
+        </p>
+        <ul class="pokemons">
+            <li ng-repeat="pokemon in pokemons" class="pokemon">
+                <div class="pokemon-info">
+                    <h2 class="pokemon-name media-heading">{{pokemon.identifier}}</h2>
+                    <h4 class="pokemon-types">
+                        Type
+                    </h4>
+                    <div class="types">
+                        <span ng-repeat="type in pokemon.types" class="pokemon-type type-{{type.identifier}}">
+                            {{type.identifier}}
+                        </span>
+                    </div>
+                    <h4>
+                        Not very effective:
+                    </h4>
+                    <div class="types">
+                        <span ng-repeat="type in pokemon.strengths" class="pokemon-type type-{{type.identifier}}">
+                            {{type.identifier}}
+                        </span>
+                    </div>
+                    <h4>
+                        Very effective:
+                    </h4>
+                    <div class="types">
+                        <span ng-repeat="type in pokemon.weaknesses" class="pokemon-type type-{{type.identifier}}">
+                            {{type.identifier}}
+                        </span>
+                    </div>
+                    <div ng-if="pokemon.immunities.length > 0">
+                        <h4>
+                            Immune: {{pokemon.immunities.length}}
+                        </h4>
+                        <div class="types">
+                            <span ng-repeat="type in pokemon.immunities" class="pokemon-type type-{{type.identifier}}">
+                                {{type.identifier}}
+                            </span>
                         </div>
-                    </nav>
-                    <p>
-                        Search for the PKMN you are up againast and you can
-                        see which move types are NOT VERY EFFECTIVE and those
-                        which are VERY EFFECTIVE.
-                    </p>
-                    <div class="pokemon">
-                        <ul class="list-group">
-                            <li ng-repeat="pokemon in pokemons"
-                                class="list-group-item list-group-pokemon active">
-                                <div class="pokemon">
-                                    <h2 class="pokemon-name media-heading">{{pokemon.identifier}}</h2>
-                                    <h4 class="pokemon-types">
-                                        Type
-                                        <div ng-repeat="type in pokemon.types" class="label label-info">
-                                            {{type.identifier}}
-                                        </div>
-                                    </h4>
-                                    <h4>
-                                        Not very effective
-                                        <div class="typelist">
-                                            <span ng-repeat="type in pokemon.strengths" class="label label-danger">
-                                                {{type.identifier}}
-                                            </span>
-                                        </div>
-                                    </h4>
-                                    <h4>
-                                        Very effective
-                                        <div class="typelist">
-                                            <span ng-repeat="type in pokemon.weaknesses" class="label label-success">
-                                                {{type.identifier}}
-                                            </span>
-                                        </div>
-                                    </h4>
-                                    <h4>
-                                        Immune
-                                        <div class="typelist">
-                                            <span ng-repeat="type in pokemon.immunities" class="label label-default">
-                                                {{type.identifier}}
-                                            </span>
-                                        </div>
-                                    </h4>
-                                </div>
-                                <img class="pokemon-image hidden-xs" src="http://img.pokemondb.net/artwork/{{pokemon.identifier}}.jpg" />
-                            </li>
-                        </ul>
                     </div>
                 </div>
-            </div>
-        </div>
+                <img class="pokemon-image" src="http://img.pokemondb.net/artwork/{{pokemon.identifier}}.jpg" />
+            </li>
+        </ul>
     </div>
 </body>
 </html>
