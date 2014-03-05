@@ -107,6 +107,7 @@ pmwt = pokemon
             }
             return true;
         });
+        pm.immunities = immunities;
         return pm;
     });
 
