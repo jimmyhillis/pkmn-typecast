@@ -226,31 +226,29 @@
                             {{type.identifier}}
                         </span>
                     </div>
-                    <h4>
+                    <h4 ng-show="pokemon.strengths">
                         Not very effective:
                     </h4>
-                    <div class="types">
+                    <div ng-show="pokemon.strengths" class="types">
                         <span ng-repeat="type in pokemon.strengths" class="pokemon-type type-{{type.identifier}}">
                             {{type.identifier}}
                         </span>
                     </div>
-                    <h4>
+                    <h4 ng-show="pokemon.weaknesses">
                         Very effective:
                     </h4>
-                    <div class="types">
+                    <div ng-show="pokemon.weaknesses" class="types">
                         <span ng-repeat="type in pokemon.weaknesses" class="pokemon-type type-{{type.identifier}}">
                             {{type.identifier}}
                         </span>
                     </div>
-                    <div ng-if="pokemon.immunities.length > 0">
-                        <h4>
-                            Immune: {{pokemon.immunities.length}}
-                        </h4>
-                        <div class="types">
-                            <span ng-repeat="type in pokemon.immunities" class="pokemon-type type-{{type.identifier}}">
-                                {{type.identifier}}
-                            </span>
-                        </div>
+                    <h4 ng-show="pokemon.immunities">
+                        Immune:
+                    </h4>
+                    <div ng-show="pokemon.immunities" class="types">
+                        <span ng-repeat="type in pokemon.immunities" class="pokemon-type type-{{type.identifier}}">
+                            {{type.identifier}}
+                        </span>
                     </div>
                 </div>
                 <img class="pokemon-image" ng-src="http://img.pokemondb.net/artwork/{{pokemon.identifier}}.jpg" />
